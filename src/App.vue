@@ -1,11 +1,15 @@
 <template>
+  <!-- <Header :text="myText" :number="1" role="parent" @set-text="myText = $event"></Header>
+  <Header :text="'rerwreeg'" :number="7"></Header> -->
+
+  <!-- <h1>hello h1</h1> -->
   <section class="todoapp">
     <header class="header">
-      <h1>todos</h1>
-      <input class="new-todo" placeholder="What needs to be done?" autofocus>
+      <h1 @click="myText = 'myText'">todos</h1>
+      <input class="new-todo" placeholder="What needs to be done?" autofocus />
     </header>
     <section class="main">
-      <input id="toggle-all" class="toggle-all" type="checkbox">
+      <input id="toggle-all" class="toggle-all" type="checkbox" />
       <label for="toggle-all">Mark all as complete</label>
       <ul class="todo-list">
         <li class="todo" v-for="i in [1, 2, 3]" :key="i">
@@ -42,7 +46,10 @@
   </footer>
 </template>
 
-
 <script setup>
+// import { onBeforeMount, ref } from 'vue';
+// import Header from './components/Header/Header.vue';
+// onBeforeMount(() => console.log('hello'));
 
+// const myText = ref('12342');
 </script>
