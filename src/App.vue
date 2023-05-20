@@ -4,52 +4,67 @@
 
   <!-- <h1>hello h1</h1> -->
   <section class="todoapp">
-    <header class="header">
-      <h1 @click="myText = 'myText'">todos</h1>
-      <input class="new-todo" placeholder="What needs to be done?" autofocus />
-    </header>
+    <todo-header @add-new-todo="addTodo"></todo-header>
     <section class="main">
       <input id="toggle-all" class="toggle-all" type="checkbox" />
       <label for="toggle-all">Mark all as complete</label>
       <ul class="todo-list">
-        <li class="todo" v-for="i in [1, 2, 3]" :key="i">
-          <div class="view">
-            <input class="toggle" type="checkbox" />
-            <label>todo #{{ i }}</label>
-            <button class="destroy"></button>
-          </div>
-          <input class="edit" type="text" />
-        </li>
+        <todo-item
+          v-for="todo in todoList"
+          :key="todo.id"
+          :todo="todo"
+          @toggle-state="toggleTodoState"
+        ></todo-item>
       </ul>
     </section>
-    <footer class="footer">
-      <span class="todo-count"></span>
-      <ul class="filters">
-        <li>
-          <a href="#/" class="selected">All</a>
-        </li>
-        <li>
-          <a href="#/active">Active</a>
-        </li>
-        <li>
-          <a href="#/completed">Completed</a>
-        </li>
-      </ul>
-      <button class="clear-completed">Clear completed</button>
-    </footer>
+    <footer-filter :count="activeTodoCount" @set-filter="filter = $event"></footer-filter>
   </section>
-  <footer class="info">
-    <p>Double-click to edit a todo</p>
-    <p>Created by <a href="http://twitter.com/oscargodson">Oscar Godson</a></p>
-    <p>Refactored by <a href="https://github.com/cburgmer">Christoph Burgmer</a></p>
-    <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
-  </footer>
+  <Footer></Footer>
 </template>
 
 <script setup>
+import Footer from './components/Footer/Footer.vue';
+import TodoItem from './components/TodoList/TodoItem.vue';
+import FooterFilter from './components/FooterFilters/FooterFilter.vue';
+import TodoHeader from './components/TodoHeader/TodoHeader.vue';
+import { v4 } from 'uuid';
+import { computed, ref } from 'vue';
 // import { onBeforeMount, ref } from 'vue';
 // import Header from './components/Header/Header.vue';
 // onBeforeMount(() => console.log('hello'));
 
 // const myText = ref('12342');
+const props = defineProps(['i']);
+const todos = ref([
+  { id: v4(), title: 'Buy Pc', isComplited: false },
+  { id: v4(), title: 'Run', isComplited: true },
+  { id: v4(), title: 'Clean', isComplited: false },
+]);
+
+function addTodo(text) {
+  todos.value.push({ id: v4(), title: text, isComplited: false });
+}
+
+const activeTodoCount = computed(() => todos.value.filter(t => !t.isComplited).length)
+
+function toggleTodoState(id) {
+  const todo = getTodoById(id);
+  todo.isComplited = !todo.isComplited;
+}
+
+const filter = ref('all')
+function todosToShow(){
+switch(filter.value){
+  case 'all': return todos.value
+  case 'active': return todos.value.filter(t => !t.isComplited)
+  case 'complited': return todos.value.filter(t => t.isComplited)
+}
+}
+
+const todoList = computed(todosToShow)
+
+function getTodoById(id) {
+  console.log(id);
+  return todos.value.find(t => t.id === id);
+}
 </script>
